@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 import joblib, json
-from prometheus_client import Counter, Summary
+from prometheus_client import Counter,start_http_server ,Summary
 import prometheus_client
 import time
 from fastapi.responses import JSONResponse
@@ -20,15 +20,16 @@ REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing requ
 
 c = Counter("Classifier_request_count", "Number of requests processed")
 
+start_http_server(8080)
 
 
-@REQUEST_TIME.time()
 @app.post("/predict-iris")
+@REQUEST_TIME.time()
 async def get_iris(info : Request):
     data = await info.json()
     print("Data:", data)
 
-    c.inc()
+   
     sepal_length = data["sepal_length"]
     sepal_width = data["sepal_width"]
     petal_length = data["petal_length"]
@@ -43,15 +44,10 @@ async def get_iris(info : Request):
 
     print(pred_result)
     time.sleep(1)
-
+    c.inc()
     return json.dumps(pred_result.tolist())
 
 
-@app.get("/metrics")
-def metrics():
-    res = []
-    res.append(prometheus_client.generate_latest(c))
-    res.append(prometheus_client.generate_latest(REQUEST_TIME))
-    return res
+
 
 #Launch API : uvicorn main:app --reload
