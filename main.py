@@ -42,7 +42,7 @@ async def get_iris(info : Request):
     pred_result = iris_model.predict(iris_data)
 
     print(pred_result)
-
+    time.sleep(1)
 
     return json.dumps(pred_result.tolist())
 
