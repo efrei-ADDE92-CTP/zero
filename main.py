@@ -23,8 +23,9 @@ c = Counter("Classifier_request_count", "Number of requests processed")
 start_http_server(8080)
 
 
-@app.post("/predict-iris")
+
 @REQUEST_TIME.time()
+@app.post("/predict-iris")
 async def get_iris(info : Request):
     data = await info.json()
     print("Data:", data)
