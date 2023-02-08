@@ -23,11 +23,6 @@ c = Counter("Classifier_request_count", "Number of requests processed")
 
 
 @REQUEST_TIME.time()
-def process_request(t):
-    """A dummy function that takes some time."""
-    time.sleep(t)
-
-
 @app.post("/predict-iris")
 async def get_iris(info : Request):
     data = await info.json()
