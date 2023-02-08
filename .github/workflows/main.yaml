@@ -37,7 +37,7 @@ jobs:
             location: 'westeurope'
       
         - name: Build and deploy Container App
-          uses: azure/container-apps-deploy-action@v0
+          uses: azure/container-apps-deploy-action@main
           with:
             acrName: efreiprediction
             containerAppName: api-iris-grp-0
