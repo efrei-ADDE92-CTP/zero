@@ -43,4 +43,5 @@ jobs:
             containerAppName: api-iris-grp-0
             resourceGroup: ADDE92-CTP
             imageToDeploy: efreiprediction.azurecr.io/app-iris-grp-0:${{ github.sha }}
+            containerAppEnvironment: api-iris-grp-0
             targetPort: 80
