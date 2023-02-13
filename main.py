@@ -3,12 +3,14 @@ import joblib, json
 from prometheus_client import Counter,generate_latest ,Summary
 import time
 from fastapi.responses import JSONResponse
+from starlette_exporter import PrometheusMiddleware, handle_metrics
+
 
 app = FastAPI()
+app = FastAPI()
+app.add_middleware(PrometheusMiddleware)
+app.add_route("/metrics", handle_metrics)
 
-from sklearn.datasets import load_iris 
-from prometheus_client.parser import text_string_to_metric_families
-from sklearn.model_selection import train_test_split
 
 
 
@@ -16,17 +18,10 @@ REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing requ
 
 c = Counter("Classifier_request_count", "Number of requests processed")
 
-def format_string(s):
-    lines = s.split("\n")
-    return "\n".join(lines)
-
-
 @REQUEST_TIME.time()
 @app.post("/predict-iris")
 async def get_iris(info : Request):
     data = await info.json()
-    print("Data:", data)
-
    
     sepal_length = data["sepal_length"]
     sepal_width = data["sepal_width"]
@@ -34,7 +29,6 @@ async def get_iris(info : Request):
     petal_width = data["petal_width"]
 
     iris_data = [[sepal_length, sepal_width, petal_length, petal_width]]
-
 
     #Load model
     iris_model = joblib.load('iris_classification_model.pkl')
@@ -48,9 +42,6 @@ async def get_iris(info : Request):
 
 @app.get('/metrics')
 async def metrics():    
-    metrics = str(generate_latest().decode())
-    print(metrics)
-    return metrics
-
+    return generate_latest()
 
 #Launch API : uvicorn main:app --reload

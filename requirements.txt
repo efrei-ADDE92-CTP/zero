@@ -3,3 +3,4 @@ joblib
 scikit-learn
 uvicorn
 prometheus_client
+starlette_exporter
