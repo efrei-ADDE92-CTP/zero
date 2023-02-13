@@ -1,18 +1,10 @@
 from fastapi import FastAPI, Request
 import joblib, json
 from prometheus_client import Counter,generate_latest ,Summary
-import time
-from fastapi.responses import JSONResponse
-from starlette_exporter import PrometheusMiddleware, handle_metrics
+from fastapi.responses import PlainTextResponse
 
 
 app = FastAPI()
-app = FastAPI()
-app.add_middleware(PrometheusMiddleware)
-app.add_route("/metrics", handle_metrics)
-
-
-
 
 REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
 
@@ -40,7 +32,7 @@ async def get_iris(info : Request):
     return json.dumps(pred_result.tolist())
 
 
-@app.get('/metrics')
+@app.get('/metrics', response_class=PlainTextResponse)
 async def metrics():    
     return generate_latest()
 
