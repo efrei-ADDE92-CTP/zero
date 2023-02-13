@@ -6,6 +6,9 @@ from fastapi.responses import PlainTextResponse
 
 app = FastAPI()
 
+#Load model
+iris_model = joblib.load('iris_classification_model.pkl')
+
 REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
 
 c = Counter("Classifier_request_count", "Number of requests processed")
@@ -21,9 +24,6 @@ async def get_iris(info : Request):
     petal_width = data["petal_width"]
 
     iris_data = [[sepal_length, sepal_width, petal_length, petal_width]]
-
-    #Load model
-    iris_model = joblib.load('iris_classification_model.pkl')
 
     pred_result = iris_model.predict(iris_data)
 
