@@ -1,13 +1,13 @@
 from fastapi import FastAPI, Request
 import joblib, json
-from prometheus_client import Counter,start_http_server ,Summary
-import prometheus_client
+from prometheus_client import Counter,generate_latest ,Summary
 import time
 from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
 from sklearn.datasets import load_iris 
+from prometheus_client.parser import text_string_to_metric_families
 from sklearn.model_selection import train_test_split
 
 #Get testing data
@@ -19,8 +19,6 @@ X_train, X_test, y_train, y_test =train_test_split(X, y, test_size = 0.3, random
 REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
 
 c = Counter("Classifier_request_count", "Number of requests processed")
-
-start_http_server(8080)
 
 
 
@@ -49,6 +47,9 @@ async def get_iris(info : Request):
     return json.dumps(pred_result.tolist())
 
 
+@app.get('/metrics')
+async def metrics():
+    return generate_latest()
 
 
 #Launch API : uvicorn main:app --reload
