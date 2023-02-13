@@ -10,8 +10,6 @@ from sklearn.datasets import load_iris
 from prometheus_client.parser import text_string_to_metric_families
 from sklearn.model_selection import train_test_split
 
-#Load model
-iris_model = joblib.load('iris_classification_model.pkl')
 
 
 REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
@@ -37,6 +35,9 @@ async def get_iris(info : Request):
 
     iris_data = [[sepal_length, sepal_width, petal_length, petal_width]]
 
+
+    #Load model
+    iris_model = joblib.load('iris_classification_model.pkl')
 
     pred_result = iris_model.predict(iris_data)
 
