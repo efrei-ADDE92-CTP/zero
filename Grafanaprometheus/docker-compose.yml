@@ -1,0 +1,30 @@
+
+version: '2'
+
+services:
+  prometheus:
+    image: docker.io/bitnami/prometheus:2
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: docker.io/bitnami/grafana:6
+    ports:
+      - '3000:3000'
+    depends_on:
+      - prometheus
+
+  node-exporter:
+    image: docker.io/bitnami/node-exporter:0
+    ports:
+      - '9100:9100'
+
+  alertmanager:
+    image: docker.io/bitnami/alertmanager:0
+    ports:
+      - '9093:9093'
+    depends_on:
+      - prometheus
+  
